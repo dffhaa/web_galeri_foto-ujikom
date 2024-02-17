@@ -7,3 +7,5 @@ bahasa yang saya pakai yaitu
 3. bootstrap
 
 sebelum pakai silahkan upload database mysql terlebih dahulu
+
+![Screenshot 2024-02-17 105318](https://github.com/dffhaa/web_galeri_foto-ujikom/assets/134750606/7bf46a84-e315-4588-809b-1aad2d4940e3)
