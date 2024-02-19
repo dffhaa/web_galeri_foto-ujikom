@@ -136,7 +136,7 @@
             <div class="mt-5">
                 <span class="h3">Foto Terbaru</span>
                 <a class="btn btn-primary btn-sm float-end" href="index.php">
-                    
+
                     Kembali
                 </a>
 
@@ -164,14 +164,28 @@
                                                 <ul class="comment-list">
                                                     <?php
                                                     // Query untuk mengambil komentar terkait dengan foto
-                                                    $sql_komentar = "SELECT isi_komentar, tanggal_komentar, tb_user.username FROM tb_komentarfoto JOIN tb_user ON tb_komentarfoto.user_id=tb_user.user_id WHERE foto_id = '" . $row_foto['foto_id'] . "'";
+                                                    $sql_komentar = "SELECT  komentar_id, isi_komentar, tanggal_komentar, tb_user.username FROM tb_komentarfoto JOIN tb_user ON tb_komentarfoto.user_id=tb_user.user_id WHERE foto_id = '" . $row_foto['foto_id'] . "'";
                                                     $result_komentar = $conn->query($sql_komentar);
 
                                                     if ($result_komentar->num_rows > 0) {
                                                         while ($row_komentar = $result_komentar->fetch_assoc()) {
                                                     ?>
-                                                            <li class="comment"><?php echo $row_komentar['isi_komentar']; ?> </li>
+                                                            <li class="coment nav-item dropdown">
+                                                                <a class="comment nav-link dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
+                                                                    <?php echo $row_komentar['isi_komentar']; ?> 
+                                                                </a>
+                                                                <ul class="dropdown-menu">
 
+                                                                    <li>
+                                                                        <form action="komentar/hapus.php" method="post">
+                                                                            <input type="hidden" class="form-control" name="fotoid" id="fotoid" value="<?php echo $fotoid ?>">
+                                                                            <input type="hidden" class="form-control" name="komentar_id" id="komentar_id" value="<?php echo $row_komentar['komentar_id'] ?>">
+                                                                            <input type="submit" class="dropdown-item btn btn-primary" value="Hapuss">
+
+                                                                        </form>
+                                                                    </li>
+                                                                </ul>
+                                                            </li>
                                                             <li class="comment1 "><?php echo $row_komentar['username']; ?></li>
                                                             <li style="margin-top: -20px;" class="comment1 float-end"><?php echo date('d-m-Y', strtotime($row_komentar['tanggal_komentar'])); ?></li>
 
@@ -186,62 +200,67 @@
                                                         <label for="commentInput" class="form-label">Add a Comment:</label>
                                                     </li>
                                                 </ul>
+
                                                 <div style="margin-top: -20px;">
 
-                                                    
 
-                                                
-                                                <form action="komentar/store.php?foto_id=<?php echo $fotoid ?>" method="post">
-                                                    <input type="text" class="form-control float-start w-75" id="koment" name="koment" placeholder="Your comment...">
-                                                    <div class="btn-group float-end mb-3" role="group" aria-label="Basic example">
-                                                        <input type="hidden" class="form-control" name="fotoid" id="fotoid" value="<?php echo $fotoid ?>">
-                                                        <input type="hidden" class="form-control" name="userid" id="userid" value="<?php echo $_SESSION['user_id'] ?>">
-                                                        <input type="hidden" class="form-control" name="tanggal" id="tanggal" value="<?php echo date('Y-m-d'); ?>">
-                                                        
-                                                        <button type="submit" class="btn btn-primary ms-2"><i class="material-icons" style="font-size:15px">send</i></button>
-                                                </form>
-                                                        <?php
-                                                        $user = $_SESSION['user_id'];
-                                                        $like = mysqli_query($conn, "SELECT * FROM tb_likefoto WHERE foto_id='$fotoid'");
 
-                                                        $ceksuka = mysqli_query($conn, "SELECT * FROM tb_likefoto WHERE foto_id = '$fotoid' AND user_id='$user'");
 
-                                                        if(mysqli_num_rows($ceksuka) == 1){ ?>
-                                                            <a href="like/store.php?foto_id=<?php echo $fotoid ?>" type="submit" name="batalsuka" class="btn btn-primary ms-2">
-                                                                <i class="bi bi-heart-fill"></i>
-                                                                <?php echo mysqli_num_rows($like). 'suka'; ?>
-                                                            </a>
-                                                        <?php
-                                                        }else{
-                                                        ?>
-                                                            <a href="like/store.php?foto_id=<?php echo $fotoid ?>" type="submit" name="suka" class="btn btn-primary ms-2">
-                                                                <i class="bi bi-heart"></i>
-                                                                <?php echo mysqli_num_rows($like). 'suka'; ?>
-                                                            </a>
-                                                        <?php
-                                                        }
-                                                        
-                                                        ?>
-                                                        <div class="mb-2 bg-primary text-white"></div>
-                                                        
-                                                    </div>
+                                                    <form action="komentar/store.php" method="post">
+                                                        <input type="text" class="form-control float-start w-75" id="koment" name="koment" placeholder="Your comment...">
+                                                        <div class="btn-group float-end mb-3" role="group" aria-label="Basic example">
+                                                            <input type="hidden" class="form-control" name="fotoid" id="fotoid" value="<?php echo $fotoid ?>">
+                                                            <input type="hidden" class="form-control" name="userid" id="userid" value="<?php echo $_SESSION['user_id'] ?>">
+                                                            <input type="hidden" class="form-control" name="tanggal" id="tanggal" value="<?php echo date('Y-m-d'); ?>">
+
+                                                            <button type="submit" class="btn btn-primary ms-2"><i class="material-icons" style="font-size:15px">send</i></button>
+                                                    </form>
+                                                    <?php
+                                                    $user = $_SESSION['user_id'];
+                                                    $like = mysqli_query($conn, "SELECT * FROM tb_likefoto WHERE foto_id='$fotoid'");
+
+                                                    $ceksuka = mysqli_query($conn, "SELECT * FROM tb_likefoto WHERE foto_id = '$fotoid' AND user_id='$user'");
+
+                                                    if (mysqli_num_rows($ceksuka) == 1) { ?>
+                                                        <a href="like/store.php?foto_id=<?php echo $fotoid ?>" type="submit" name="batalsuka" class="btn btn-primary ms-2">
+                                                            <i class="bi bi-heart-fill">
+                                                                <?php echo mysqli_num_rows($like) ?>
+                                                                Suka
+                                                            </i>
+                                                        </a>
+                                                    <?php
+                                                    } else {
+                                                    ?>
+                                                        <a href="like/store.php?foto_id=<?php echo $fotoid ?>" type="submit" name="suka" class="btn btn-primary ms-2">
+                                                            <i class="bi bi-heart">
+                                                                <?php echo mysqli_num_rows($like) ?>
+                                                                Suka
+                                                            </i>
+                                                        </a>
+                                                    <?php
+                                                    }
+
+                                                    ?>
+                                                    <div class="mb-2 bg-primary text-white"></div>
+
                                                 </div>
                                             </div>
                                         </div>
                                     </div>
                                 </div>
                             </div>
-
                 </div>
-        <?php
+
+            </div>
+    <?php
                         }
                     } else {
                         echo "No photo found.";
                     }
-        ?>
-            </div>
-
+    ?>
         </div>
+
+    </div>
 
 
 
